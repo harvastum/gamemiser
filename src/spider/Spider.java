@@ -18,13 +18,14 @@ public class Spider {
         shoppers.add(new SteamShopper());
 
         for (Shopper shopper : shoppers){
-            shopper.run("civ");
+            shopper.run("gothic");
             System.out.println("title:");
             System.out.println(shopper.getTitle());
             System.out.println("price:");
             System.out.println(shopper.getPrice());
             System.out.println("img:");
             System.out.println(shopper.getImgSrc());
+
 
         }
     }

@@ -1,8 +1,13 @@
 package spider;
 
-public interface Shopper {
-    void run(String query);
-    String getTitle();
-    String getImgSrc();
-    String getPrice();
+public abstract class Shopper {
+
+    abstract void run(String query);
+    abstract String getTitle();
+    abstract String getImgSrc();
+    abstract String getPrice();
+    abstract String getLink();
+
+
+
 }
