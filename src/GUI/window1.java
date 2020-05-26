@@ -27,7 +27,6 @@ public class window1 extends JFrame{
         SearchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Dziala :)");
                 DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columns);
                 Results.setModel(model);
