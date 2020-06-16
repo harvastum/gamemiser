@@ -8,17 +8,22 @@ import org.jsoup.nodes.Node;
 import java.awt.*;
 
 import static java.lang.Integer.parseInt;
-
-public class SteamShopper extends Shopper {
+//public class SteamShopper implements ShopperInterface
+public class SteamShopper implements Runnable, Shopper
+{
     final String baseUrl = "https://store.steampowered.com/search/?term=";
     String title;
     String textPrice;
     String imageSrc;
     String link;
     int price;
+    String query;
+    public SteamShopper(String query){
+        this.query = query;
+    }
 
     @Override
-    public void run(String query) {
+    public void run() {
                 try {
             Document doc = Jsoup.connect(baseUrl + query).get();
 //            Node docu = doc.selectFirst("#search_resultsRows > a:nth-child(1)");

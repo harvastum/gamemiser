@@ -15,18 +15,17 @@ import static java.lang.Integer.parseInt;
 public class Spider {
     public static void main (String[] args){
         ArrayList<Shopper> shoppers = new ArrayList<>();
-        shoppers.add(new SteamShopper());
+        String query = "gothic";
+        shoppers.add(new SteamShopper(query));
 
         for (Shopper shopper : shoppers){
-            shopper.run("gothic");
+            shopper.run();
             System.out.println("title:");
             System.out.println(shopper.getTitle());
             System.out.println("price:");
             System.out.println(shopper.getPrice());
             System.out.println("img:");
             System.out.println(shopper.getImgSrc());
-
-
         }
     }
 }
