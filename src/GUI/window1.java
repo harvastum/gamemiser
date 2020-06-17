@@ -1,14 +1,12 @@
 package GUI;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import spider.Shopper;
 import spider.SteamShopper;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -26,23 +24,37 @@ public class window1 extends JFrame{
     private JLabel AppTitle;
     private JTable Results;
     private JPanel ResultView;
-    private JTextPane textPane1;
+    private JTextArea textArea;
     private DefaultTableModel model;
+    private String text;
     String[] columns = {"Title", "Website", "Price"};
 
-    Object[][] data = {{"GTA V", "Steam", "120,69"},
-            {"GTA V", "Epic Store", "0"},
-            {"GTA V", "Steam", "120,32"},
-            {"GTA V", "Epic Store", "0"},
-            {"GTA V", "Steam", "120,82"},
-            {"GTA V", "Epic Store", "0"}};
+    Object[][] data = {{"GTA V", "Steam", 120.61},
+            {"GTA V", "Epic Store", 1.00},
+            {"GTA V", "Steam", 121.32},
+            {"GTA V", "Epic Store", 0.00},
+            {"GTA V", "Steam", 20.82},
+            {"GTA V", "Epic Store", 0.00}};
     int flag = 0;
 
     public window1() {
         SearchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model = new DefaultTableModel();
+                text = textArea.getText();
+
+                model = new DefaultTableModel(data, columns){
+                    @Override
+                    public Class<?> getColumnClass(int col) {
+
+                        Class retVal = Object.class;
+
+                        if(getRowCount() > 0)
+                            retVal =  getValueAt(0, col).getClass();
+
+                        return retVal;
+                    }
+                };
                 model.setColumnIdentifiers(columns);
                 Results.setModel(model);
                 Results.setPreferredScrollableViewportSize(new Dimension(400, 50));
@@ -60,7 +72,8 @@ public class window1 extends JFrame{
 
                 Results.getColumnModel().getColumn(0).setHeaderValue("Title");
                 Object[] row = new Object[3];
-
+                TableColumn column2 = Results.getColumnModel().getColumn(2);
+                /*
                 ArrayList<Shopper> shoppers = new ArrayList<>();
                 String query = "gothic";
                 shoppers.add(new SteamShopper(query));
@@ -89,15 +102,9 @@ public class window1 extends JFrame{
                     row[1] = shopper.getPrice();
                     row[2] = new ImageIcon(shopper.getImgSrc());
                     model.addRow(row);
-                }
+                }*/
             }
         });
-
-        /*public void paint(Graphics g) {
-            Toolkit t = Toolkit.getDefaultToolkit();
-            Image i = t.getImage();
-            g.drawImage(i, 120, 100, this);
-        }*/
     }
 
     public static void main(String[] args){
@@ -113,4 +120,21 @@ public class window1 extends JFrame{
         frame.setVisible(true);
     }
 
+}
+
+class DoubleRenderer extends DefaultTableCellRenderer {
+    DoubleRenderer() {
+        setHorizontalAlignment(SwingConstants.RIGHT);
+    }
+
+    @Override
+    public void setValue(Object aValue) {
+        Object result = aValue;
+        if ((aValue != null) && (aValue instanceof Number)) {
+            Number numberValue = (Number) aValue;
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            result = formatter.format(numberValue.doubleValue());
+        }
+        super.setValue(result);
+    }
 }
