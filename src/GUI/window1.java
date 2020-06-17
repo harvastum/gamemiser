@@ -1,5 +1,9 @@
 package GUI;
 
+import spider.Shopper;
+import spider.SteamShopper;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -7,6 +11,10 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -52,13 +60,36 @@ public class window1 extends JFrame{
 
                 Results.getColumnModel().getColumn(0).setHeaderValue("Title");
                 Object[] row = new Object[3];
-                for (int i = 0; i < data.length; i++) {
-                    row[0] = data[i][0];
-                    row[1] = data[i][1];
-                    row[2] = data[i][2];
+
+                ArrayList<Shopper> shoppers = new ArrayList<>();
+                String query = "gothic";
+                shoppers.add(new SteamShopper(query));
+                for (Shopper shopper : shoppers) {
+                    shopper.run();
+
+                    URL url = null;
+                    try {
+                        url = new URL(shopper.getImgSrc());
+                    } catch (MalformedURLException malformedURLException) {
+                        // TODO: j4log
+                        malformedURLException.printStackTrace();
+                    }
+
+                    try {
+                        BufferedImage img = ImageIO.read(url);
+                        ImageIcon image = new ImageIcon(img);
+                    } catch (IOException ioException) {
+                        // TODO: j4log
+                        ioException.printStackTrace();
+                        String image = "Loading image failed.";
+                    }
+
+                    ImageIcon icon = new ImageIcon(shopper.getImgSrc());
+                    row[0] = shopper.getTitle();
+                    row[1] = shopper.getPrice();
+                    row[2] = new ImageIcon(shopper.getImgSrc());
                     model.addRow(row);
                 }
-
             }
         });
 
