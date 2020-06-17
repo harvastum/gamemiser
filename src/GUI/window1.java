@@ -30,9 +30,6 @@ public class window1 extends JFrame{
             {"GTA V", "Epic Store", 0.00}};
     int flag = 0;
 
-    public Class getColumnClass(int column){
-        return data[0][column].getClass();
-    }
     public window1() {
         SearchButton.addActionListener(new ActionListener() {
             @Override
