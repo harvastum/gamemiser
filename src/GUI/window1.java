@@ -26,7 +26,7 @@ public class window1 extends JFrame{
     private JPanel ResultView;
     private JTextArea textArea;
     private DefaultTableModel model;
-    private String text;
+
     String[] columns = {"Title", "Website", "Price"};
 
     Object[][] data = {{"GTA V", "Steam", 120.61},
@@ -38,73 +38,80 @@ public class window1 extends JFrame{
     int flag = 0;
 
     public window1() {
-        SearchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                text = textArea.getText();
+        SearchButton.addActionListener(e -> {
+            model.setRowCount(0);
+            String query = textArea.getText();
+            Object[] row = new Object[3];
+            ArrayList<Shopper> shoppers = new ArrayList<>();
+            shoppers.add(new SteamShopper(query));
+            // Loop that calls shoppers and adds rows to the table
+            for (Shopper shopper : shoppers) {
+                shopper.run();
+                URL url = null;
+                ImageIcon image = null;
+                try {
+                    url = new URL(shopper.getImgSrc());
+                } catch (MalformedURLException malformedURLException) {
+                    // TODO: j4log
+                    malformedURLException.printStackTrace();
+                }
 
-                model = new DefaultTableModel(data, columns){
-                    @Override
-                    public Class<?> getColumnClass(int col) {
+                try {
+                    BufferedImage img = ImageIO.read(url);
+                    image = new ImageIcon(img);
+                } catch (IOException ioException) {
+                    // TODO: j4log
+                    ioException.printStackTrace();
+                    System.out.println("Loading image failed.");
+                }
 
-                        Class retVal = Object.class;
-
-                        if(getRowCount() > 0)
-                            retVal =  getValueAt(0, col).getClass();
-
-                        return retVal;
-                    }
-                };
-                model.setColumnIdentifiers(columns);
-                Results.setModel(model);
-                Results.setPreferredScrollableViewportSize(new Dimension(400, 50));
-
-                //Results.setAutoCreateRowSorter(true);
-                TableRowSorter<TableModel> sorter = new TableRowSorter<>(Results.getModel());
-                Results.setRowSorter(sorter);
-                List<RowSorter.SortKey> sortKey = new ArrayList<>();
-
-                int sortColumn = 2;
-                sortKey.add(new RowSorter.SortKey(sortColumn, SortOrder.ASCENDING));
-
-                sorter.setSortKeys(sortKey);
-                sorter.sort();
-
-                Results.getColumnModel().getColumn(0).setHeaderValue("Title");
-                Object[] row = new Object[3];
-                TableColumn column2 = Results.getColumnModel().getColumn(2);
-                /*
-                ArrayList<Shopper> shoppers = new ArrayList<>();
-                String query = "gothic";
-                shoppers.add(new SteamShopper(query));
-                for (Shopper shopper : shoppers) {
-                    shopper.run();
-
-                    URL url = null;
-                    try {
-                        url = new URL(shopper.getImgSrc());
-                    } catch (MalformedURLException malformedURLException) {
-                        // TODO: j4log
-                        malformedURLException.printStackTrace();
-                    }
-
-                    try {
-                        BufferedImage img = ImageIO.read(url);
-                        ImageIcon image = new ImageIcon(img);
-                    } catch (IOException ioException) {
-                        // TODO: j4log
-                        ioException.printStackTrace();
-                        String image = "Loading image failed.";
-                    }
-
-                    ImageIcon icon = new ImageIcon(shopper.getImgSrc());
-                    row[0] = shopper.getTitle();
-                    row[1] = shopper.getPrice();
-                    row[2] = new ImageIcon(shopper.getImgSrc());
-                    model.addRow(row);
-                }*/
+                row[0] = shopper.getTitle();
+                row[1] = shopper.getPrice();
+                row[2] =image;
+                System.out.println(url);
+                model.addRow(row);
             }
         });
+
+        model = new DefaultTableModel(
+                new Object[][][]{},
+                new String[]{
+                        "Title", "Website", "Price"
+                }
+        ){
+            Class[] types = new Class[]{
+                    String.class, String.class, ImageIcon.class
+            };
+            boolean[] canEdit = new boolean[]{
+                    false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        };
+        model.setColumnIdentifiers(columns);
+        Results.setModel(model);
+        Results.setPreferredScrollableViewportSize(new Dimension(400, 50));
+        Results.setRowHeight(50);
+
+        //Results.setAutoCreateRowSorter(true);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(Results.getModel());
+        Results.setRowSorter(sorter);
+        List<RowSorter.SortKey> sortKey = new ArrayList<>();
+
+        int sortColumn = 2;
+        sortKey.add(new RowSorter.SortKey(sortColumn, SortOrder.ASCENDING));
+
+        sorter.setSortKeys(sortKey);
+        sorter.sort();
+
+        Results.getColumnModel().getColumn(0).setHeaderValue("Title");
+        TableColumn column2 = Results.getColumnModel().getColumn(2);
     }
 
     public static void main(String[] args){
