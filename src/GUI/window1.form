@@ -59,13 +59,16 @@
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <font name="Consolas" size="36"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="b71de" class="javax.swing.JTable" binding="Results">
                 <constraints/>
                 <properties>
                   <autoCreateRowSorter value="false"/>
+                  <font name="Consolas" size="36"/>
                   <surrendersFocusOnKeystroke value="false"/>
                 </properties>
               </component>
@@ -81,7 +84,7 @@
         </constraints>
         <properties>
           <font name="Consolas" size="48"/>
-          <text value="TextArea"/>
+          <text value=""/>
         </properties>
       </component>
     </children>

@@ -44,7 +44,7 @@ public class AllegroShopper implements Shopper
             Element priceElement = doc.selectFirst("div.search_price_discount_combined");
             imageSrc = doc.selectFirst("article:nth-child(1) > div > div > div > a > img").attr("src");
             link = doc.selectFirst("article:nth-child(1) > div > div > div > a").attr("href");
-            price = parseInt(priceElement.attr("data-price-final"));
+            //price = parseInt(priceElement.attr("data-price-final"));
         } catch (java.io.IOException e) {
             log.error("IOException occurred during AllegroShopper run. Message:"+e.getMessage());
             e.printStackTrace();

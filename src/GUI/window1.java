@@ -27,14 +27,7 @@ public class window1 extends JFrame {
     private JTextField textArea;
     private DefaultTableModel model;
 
-    String[] columns = {"Title", "Website", "Price"};
 
-    Object[][] data = {{"GTA V", "Steam", 120.61},
-            {"GTA V", "Epic Store", 1.00},
-            {"GTA V", "Steam", 121.32},
-            {"GTA V", "Epic Store", 0.00},
-            {"GTA V", "Steam", 20.82},
-            {"GTA V", "Epic Store", 0.00}};
     int flag = 0;
 
     public window1() {
@@ -62,24 +55,30 @@ public class window1 extends JFrame {
                 return canEdit[columnIndex];
             }
         };
-//        model.setColumnIdentifiers(columns);
         Results.setModel(model);
         Results.setPreferredScrollableViewportSize(new Dimension(400, 50));
-        Results.setRowHeight(100);
-
-        //Results.setAutoCreateRowSorter(true);
+        Results.setRowHeight(175);
+        Results.getColumn("Title").setPreferredWidth(800);
+        Results.getColumn("Image").setPreferredWidth(200);
+        Results.getColumn("Shop").setPreferredWidth(220);
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(Results.getModel());
         Results.setRowSorter(sorter);
         List<RowSorter.SortKey> sortKey = new ArrayList<>();
-
+        textArea.setHorizontalAlignment(JTextField.CENTER);
         int sortColumn = 2;
         sortKey.add(new RowSorter.SortKey(sortColumn, SortOrder.ASCENDING));
 
         sorter.setSortKeys(sortKey);
         sorter.sort();
 
-        Results.getColumnModel().getColumn(0).setHeaderValue("Title");
         TableColumn column2 = Results.getColumnModel().getColumn(2);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        for(int x=0;x<3;x++){
+            Results.getColumnModel().getColumn(x).setCellRenderer( centerRenderer );
+        }
+
+
     }
 
     public static void main(String[] args) {
@@ -87,8 +86,8 @@ public class window1 extends JFrame {
         log.info("GameMiser started");
 
         JFrame frame = new JFrame("Gamemiser");
-        frame.setSize(1000, 1000);
-        frame.setLocation(510, 50);
+        frame.setSize(1900, 1000);
+        frame.setLocation(20, 10);
 
         window1 w = new window1();
         w.View1.setBackground(Color.LIGHT_GRAY);
@@ -98,50 +97,69 @@ public class window1 extends JFrame {
         frame.setVisible(true);
     }
 
-    ActionListener search = new ActionListener() {
+    private ActionListener search = new ActionListener() {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
             model.setRowCount(0);
             String query = textArea.getText();
-            Object[] row = new Object[4];
+
             ArrayList<Shopper> shoppers = new ArrayList<>();
             shoppers.add(new SteamShopper(query));
             shoppers.add(new UbiShopper(query));
             shoppers.add(new AllegroShopper(query));
 
             // Loop that calls shoppers and adds rows to the table
-            for (Shopper shopper : shoppers) {
-                shopper.run();
-                URL url;
-                ImageIcon image;
+            ArrayList<Thread> threads = new ArrayList<>();
+            for (Shopper shopper : shoppers)threads.add(new Thread(shopper));
+            for (Thread shopper : threads)shopper.start();
+            for (Thread shopper : threads) {
                 try {
-                    url = new URL(shopper.getImgSrc());
-                } catch (MalformedURLException malformedURLException) {
-                    // TODO: j4log
-                    //malformedURLException.printStackTrace();
-                    continue;
+                    shopper.join();
+                } catch (InterruptedException e) {
+                    log.error("Threads did an oopsie. "+e.getMessage());
+                    e.printStackTrace();
                 }
-
-                try {
-                    BufferedImage img = ImageIO.read(url);
-                    image = new ImageIcon(img);
-                } catch (IOException ioException) {
-                    // TODO: j4log
-                    ioException.printStackTrace();
-                    System.out.println("Loading image failed.");
-                    continue;
-                }
-
-                Image imageIcon = image.getImage(); // transform it
-                Image newImg = imageIcon.getScaledInstance(200, 120, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-                image = new ImageIcon(newImg);  // transform it back
-
-                row[0] = shopper.getShop();
-                row[1] = shopper.getTitle();
-                row[2] = shopper.getPrice();
-                row[3] = image;
-                model.addRow(row);
             }
+            for (Shopper shopper : shoppers)write(shopper);
+
         }
     };
+
+    public void write(Shopper shopper){
+        Object[] row = new Object[4];
+        URL url;
+        ImageIcon image;
+        try {
+            url = new URL(shopper.getImgSrc());
+        } catch (MalformedURLException malformedURLException) {
+            // TODO: j4log
+            //malformedURLException.printStackTrace();
+            return;
+        }
+
+        try {
+            BufferedImage img = ImageIO.read(url);
+            image = new ImageIcon(img);
+        } catch (IOException ioException) {
+            // TODO: j4log
+            ioException.printStackTrace();
+            System.out.println("Loading image failed.");
+            return;
+        }
+        // Image
+        Image imageIcon = image.getImage(); // transform it
+        Image newImg = imageIcon.getScaledInstance(200, 175, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+        image = new ImageIcon(newImg);  // transform it back
+
+        // Title with link
+
+        JLabel hyperlink = new JLabel("shopper.getPrice()");
+        row[0] = shopper.getShop();
+        row[1] = shopper.getTitle();
+        row[2] = shopper.getPrice();
+        row[3] = image;
+        model.addRow(row);
+        log.info(shopper.getShop()+" found a game! Link:"+shopper.getLink());
+
+    }
 }
