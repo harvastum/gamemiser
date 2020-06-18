@@ -15,9 +15,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 
 public class window1 extends JFrame{
 
+    private static final Logger Log = Logger.getLogger(window1.class);
     private JPanel View1;
     private JButton SearchButton;
     private JLabel AppTitle;
@@ -82,6 +85,9 @@ public class window1 extends JFrame{
     }
 
     public static void main(String[] args){
+        //BasicConfigurator.configure();
+        Log.info("Gamemiser start");
+
         JFrame frame = new JFrame("Gamemiser");
         frame.setSize(1000, 1000);
         frame.setLocation(510, 50);
