@@ -1,8 +1,7 @@
 package GUI;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import spider.*;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -14,13 +13,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import org.apache.log4j.BasicConfigurator;
+
 import org.apache.log4j.Logger;
 
-public class window1 extends JFrame{
+public class window1 extends JFrame {
 
-    private static final Logger Log = Logger.getLogger(window1.class);
+    private static final Logger log = Logger.getLogger(window1.class);
     private JPanel View1;
     private JButton SearchButton;
     private JLabel AppTitle;
@@ -48,7 +46,7 @@ public class window1 extends JFrame{
                 new String[]{
                         "Shop", "Title", "Price", "Image"
                 }
-        ){
+        ) {
             Class[] types = new Class[]{
                     String.class, String.class, String.class, ImageIcon.class
             };
@@ -84,9 +82,9 @@ public class window1 extends JFrame{
         TableColumn column2 = Results.getColumnModel().getColumn(2);
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         //BasicConfigurator.configure();
-        Log.info("Gamemiser start");
+        log.info("GameMiser started");
 
         JFrame frame = new JFrame("Gamemiser");
         frame.setSize(1000, 1000);
@@ -100,9 +98,9 @@ public class window1 extends JFrame{
         frame.setVisible(true);
     }
 
-    ActionListener search= new ActionListener() {
+    ActionListener search = new ActionListener() {
         @Override
-        public void actionPerformed(ActionEvent e){
+        public void actionPerformed(ActionEvent e) {
             model.setRowCount(0);
             String query = textArea.getText();
             Object[] row = new Object[4];
@@ -135,7 +133,7 @@ public class window1 extends JFrame{
                 }
 
                 Image imageIcon = image.getImage(); // transform it
-                Image newImg = imageIcon.getScaledInstance(200, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+                Image newImg = imageIcon.getScaledInstance(200, 120, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
                 image = new ImageIcon(newImg);  // transform it back
 
                 row[0] = shopper.getShop();
@@ -144,5 +142,6 @@ public class window1 extends JFrame{
                 row[3] = image;
                 model.addRow(row);
             }
-        }};
+        }
+    };
 }

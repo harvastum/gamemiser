@@ -1,5 +1,7 @@
 package spider;
 
+import GUI.window1;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,6 +14,7 @@ import static java.lang.Integer.parseInt;
 //public class SteamShopper implements ShopperInterface
 public class UbiShopper implements Shopper
 {
+    private static final Logger log = Logger.getLogger(UbiShopper.class);
     final String shop = "Ubisoft store";
     final String baseUrl = "https://store.ubi.com/eu/search?prefn1=productTypeRefinementString&prefv1=games&q=";
     String title;
@@ -46,8 +49,10 @@ public class UbiShopper implements Shopper
 
 
         } catch (java.io.IOException e) {
+            log.error("IOException occurred during UbiShopper run. Message:"+e.getMessage());
             e.printStackTrace();
         }
+        log.trace("Success");
     }
 
     @Override
