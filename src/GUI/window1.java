@@ -15,9 +15,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 
 public class window1 extends JFrame{
 
+    private static final Logger Log = Logger.getLogger(window1.class);
     private JPanel View1;
     private JButton SearchButton;
     private JLabel AppTitle;
@@ -40,19 +43,21 @@ public class window1 extends JFrame{
         SearchButton.addActionListener(e -> {
             model.setRowCount(0);
             String query = textArea.getText();
+            Log.info("Searching for results " + query + " started");
             Object[] row = new Object[4];
             ArrayList<Shopper> shoppers = new ArrayList<>();
             shoppers.add(new SteamShopper(query));
             shoppers.add(new UbiShopper(query));
             // Loop that calls shoppers and adds rows to the table
             for (Shopper shopper : shoppers) {
+                Log.info("Searching in " + shopper.getShop() + " started");
                 shopper.run();
                 URL url = null;
                 ImageIcon image = null;
                 try {
                     url = new URL(shopper.getImgSrc());
                 } catch (MalformedURLException malformedURLException) {
-                    // TODO: j4log
+                    Log.error("MalformedURLException while attempting to reach URL");
                     malformedURLException.printStackTrace();
                 }
 
@@ -60,7 +65,7 @@ public class window1 extends JFrame{
                     BufferedImage img = ImageIO.read(url);
                     image = new ImageIcon(img);
                 } catch (IOException ioException) {
-                    // TODO: j4log
+                    Log.error("IOException while attempting to get image");
                     ioException.printStackTrace();
                     System.out.println("Loading image failed.");
                 }
@@ -70,7 +75,9 @@ public class window1 extends JFrame{
                 row[3] = image;
                 System.out.println(url);
                 model.addRow(row);
+                Log.info("Searching in " + shopper.getShop() + " finished");
             }
+            Log.info("Searching for " + query + " finished");
         });
         // ############### MODEL #################
         model = new DefaultTableModel(
@@ -115,6 +122,9 @@ public class window1 extends JFrame{
     }
 
     public static void main(String[] args){
+        //BasicConfigurator.configure();
+        Log.info("Gamemiser start");
+
         JFrame frame = new JFrame("Gamemiser");
         frame.setSize(600, 300);
         frame.setLocation(410, 140);
