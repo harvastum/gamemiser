@@ -9,9 +9,10 @@ import java.awt.*;
 
 import static java.lang.Integer.parseInt;
 //public class SteamShopper implements ShopperInterface
-public class SteamShopper implements Runnable, Shopper
+public class SteamShopper implements Shopper
 {
-    final String baseUrl = "https://store.steampowered.com/search/?term=";
+    final String shop = "Steam";
+    final String baseUrl = "https://store.steampowered.com/search/?category1=998&term=";
     String title;
     String textPrice;
     String imageSrc;
@@ -57,6 +58,11 @@ public class SteamShopper implements Runnable, Shopper
     @Override
     public String getLink() {
         return link;
+    }
+
+    @Override
+    public String getShop() {
+        return shop;
     }
 
 }

@@ -2,8 +2,7 @@ package GUI;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import spider.Shopper;
-import spider.SteamShopper;
+import spider.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -41,9 +40,10 @@ public class window1 extends JFrame{
         SearchButton.addActionListener(e -> {
             model.setRowCount(0);
             String query = textArea.getText();
-            Object[] row = new Object[3];
+            Object[] row = new Object[4];
             ArrayList<Shopper> shoppers = new ArrayList<>();
             shoppers.add(new SteamShopper(query));
+            shoppers.add(new UbiShopper(query));
             // Loop that calls shoppers and adds rows to the table
             for (Shopper shopper : shoppers) {
                 shopper.run();
@@ -64,26 +64,26 @@ public class window1 extends JFrame{
                     ioException.printStackTrace();
                     System.out.println("Loading image failed.");
                 }
-
-                row[0] = shopper.getTitle();
-                row[1] = shopper.getPrice();
-                row[2] =image;
+                row[0] = shopper.getShop();
+                row[1] = shopper.getTitle();
+                row[2] = shopper.getPrice();
+                row[3] = image;
                 System.out.println(url);
                 model.addRow(row);
             }
         });
-
+        // ############### MODEL #################
         model = new DefaultTableModel(
-                new Object[][][]{},
+                new Object[][][][]{},
                 new String[]{
-                        "Title", "Website", "Price"
+                        "Shop", "Title", "Price", "Image"
                 }
         ){
             Class[] types = new Class[]{
-                    String.class, String.class, ImageIcon.class
+                    String.class, String.class, String.class, ImageIcon.class
             };
             boolean[] canEdit = new boolean[]{
-                    false, false, false
+                    false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -94,10 +94,10 @@ public class window1 extends JFrame{
                 return canEdit[columnIndex];
             }
         };
-        model.setColumnIdentifiers(columns);
+//        model.setColumnIdentifiers(columns);
         Results.setModel(model);
         Results.setPreferredScrollableViewportSize(new Dimension(400, 50));
-        Results.setRowHeight(50);
+        Results.setRowHeight(100);
 
         //Results.setAutoCreateRowSorter(true);
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(Results.getModel());

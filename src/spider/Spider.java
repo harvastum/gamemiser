@@ -15,8 +15,8 @@ import static java.lang.Integer.parseInt;
 public class Spider {
     public static void main (String[] args){
         ArrayList<Shopper> shoppers = new ArrayList<>();
-        String query = "gothic";
-        shoppers.add(new SteamShopper(query));
+        String query = "complete";
+        shoppers.add(new UbiShopper(query));
 
         for (Shopper shopper : shoppers){
             shopper.run();
@@ -26,6 +26,8 @@ public class Spider {
             System.out.println(shopper.getPrice());
             System.out.println("img:");
             System.out.println(shopper.getImgSrc());
+            System.out.println("link:");
+            System.out.println(shopper.getLink());
         }
     }
 }
