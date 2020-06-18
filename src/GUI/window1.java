@@ -64,6 +64,11 @@ public class window1 extends JFrame{
                     ioException.printStackTrace();
                     System.out.println("Loading image failed.");
                 }
+
+                Image imageIcon = image.getImage(); // transform it
+                Image newImg = imageIcon.getScaledInstance(200, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+                image = new ImageIcon(newImg);  // transform it back
+
                 row[0] = shopper.getShop();
                 row[1] = shopper.getTitle();
                 row[2] = shopper.getPrice();
@@ -74,7 +79,7 @@ public class window1 extends JFrame{
         });
         // ############### MODEL #################
         model = new DefaultTableModel(
-                new Object[][][][]{},
+                new Object[][]{},
                 new String[]{
                         "Shop", "Title", "Price", "Image"
                 }

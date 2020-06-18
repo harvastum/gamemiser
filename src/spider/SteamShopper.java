@@ -19,6 +19,7 @@ public class SteamShopper implements Shopper
     String link;
     int price;
     String query;
+    String appid;
     public SteamShopper(String query){
         this.query = query;
     }
@@ -32,9 +33,9 @@ public class SteamShopper implements Shopper
             textPrice = doc.selectFirst("div.search_price").text();
             Element priceElement = doc.selectFirst("div.search_price_discount_combined");
             link = doc.selectFirst("#search_resultsRows > a:nth-child(1)").attr("href");
-            imageSrc = doc.selectFirst("#search_resultsRows > a:nth-child(1) > div.col.search_capsule > img").attr("src");
             price = parseInt(priceElement.attr("data-price-final"));
-
+            appid = doc.selectFirst("#search_resultsRows > a:nth-child(1)").attr("data-ds-appid");
+            imageSrc = "https://steamcdn-a.akamaihd.net/steam/apps/"+appid + "/header.jpg";
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
