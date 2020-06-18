@@ -6,11 +6,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 
 import java.awt.*;
-import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
 //public class SteamShopper implements ShopperInterface
-public class SteamShopper implements Shopper
+public class EpicShopper implements Shopper
 {
     final String shop = "Steam";
     final String baseUrl = "https://store.steampowered.com/search/?category1=998&term=";
@@ -21,25 +20,18 @@ public class SteamShopper implements Shopper
     int price;
     String query;
     String appid;
-    public SteamShopper(String query){
+    public EpicShopper(String query){
         this.query = query;
     }
 
 
     @Override
     public void run() {
-                try {
+        try {
             Document doc = Jsoup.connect(baseUrl + query).get();
-            Element results = doc.selectFirst("#search_resultsRows");
-            if (results == null){
-                //TODO: put a j4log here
-                        title = "No results found!";
-                        return;
-                    }
 //            Node docu = doc.selectFirst("#search_resultsRows > a:nth-child(1)");
             title = doc.selectFirst("span.title").text();
             textPrice = doc.selectFirst("div.search_price").text();
-
             if (textPrice.equals("")) textPrice = "No price available.";
 
             Element priceElement = doc.selectFirst("div.search_price_discount_combined");

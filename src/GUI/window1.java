@@ -23,7 +23,7 @@ public class window1 extends JFrame{
     private JLabel AppTitle;
     private JTable Results;
     private JPanel ResultView;
-    private JTextArea textArea;
+    private JTextField textArea;
     private DefaultTableModel model;
 
     String[] columns = {"Title", "Website", "Price"};
@@ -37,46 +37,8 @@ public class window1 extends JFrame{
     int flag = 0;
 
     public window1() {
-        SearchButton.addActionListener(e -> {
-            model.setRowCount(0);
-            String query = textArea.getText();
-            Object[] row = new Object[4];
-            ArrayList<Shopper> shoppers = new ArrayList<>();
-            shoppers.add(new SteamShopper(query));
-            shoppers.add(new UbiShopper(query));
-            // Loop that calls shoppers and adds rows to the table
-            for (Shopper shopper : shoppers) {
-                shopper.run();
-                URL url = null;
-                ImageIcon image = null;
-                try {
-                    url = new URL(shopper.getImgSrc());
-                } catch (MalformedURLException malformedURLException) {
-                    // TODO: j4log
-                    malformedURLException.printStackTrace();
-                }
-
-                try {
-                    BufferedImage img = ImageIO.read(url);
-                    image = new ImageIcon(img);
-                } catch (IOException ioException) {
-                    // TODO: j4log
-                    ioException.printStackTrace();
-                    System.out.println("Loading image failed.");
-                }
-
-                Image imageIcon = image.getImage(); // transform it
-                Image newImg = imageIcon.getScaledInstance(200, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-                image = new ImageIcon(newImg);  // transform it back
-
-                row[0] = shopper.getShop();
-                row[1] = shopper.getTitle();
-                row[2] = shopper.getPrice();
-                row[3] = image;
-                System.out.println(url);
-                model.addRow(row);
-            }
-        });
+        SearchButton.addActionListener(search);
+        textArea.addActionListener(search);
         // ############### MODEL #################
         model = new DefaultTableModel(
                 new Object[][]{},
@@ -121,8 +83,8 @@ public class window1 extends JFrame{
 
     public static void main(String[] args){
         JFrame frame = new JFrame("Gamemiser");
-        frame.setSize(600, 300);
-        frame.setLocation(410, 140);
+        frame.setSize(1000, 1000);
+        frame.setLocation(510, 50);
 
         window1 w = new window1();
         w.View1.setBackground(Color.LIGHT_GRAY);
@@ -132,21 +94,49 @@ public class window1 extends JFrame{
         frame.setVisible(true);
     }
 
-}
+    ActionListener search= new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e){
+            model.setRowCount(0);
+            String query = textArea.getText();
+            Object[] row = new Object[4];
+            ArrayList<Shopper> shoppers = new ArrayList<>();
+            shoppers.add(new SteamShopper(query));
+            shoppers.add(new UbiShopper(query));
+            shoppers.add(new AllegroShopper(query));
 
-class DoubleRenderer extends DefaultTableCellRenderer {
-    DoubleRenderer() {
-        setHorizontalAlignment(SwingConstants.RIGHT);
-    }
+            // Loop that calls shoppers and adds rows to the table
+            for (Shopper shopper : shoppers) {
+                shopper.run();
+                URL url;
+                ImageIcon image;
+                try {
+                    url = new URL(shopper.getImgSrc());
+                } catch (MalformedURLException malformedURLException) {
+                    // TODO: j4log
+                    //malformedURLException.printStackTrace();
+                    continue;
+                }
 
-    @Override
-    public void setValue(Object aValue) {
-        Object result = aValue;
-        if ((aValue != null) && (aValue instanceof Number)) {
-            Number numberValue = (Number) aValue;
-            NumberFormat formatter = NumberFormat.getCurrencyInstance();
-            result = formatter.format(numberValue.doubleValue());
-        }
-        super.setValue(result);
-    }
+                try {
+                    BufferedImage img = ImageIO.read(url);
+                    image = new ImageIcon(img);
+                } catch (IOException ioException) {
+                    // TODO: j4log
+                    ioException.printStackTrace();
+                    System.out.println("Loading image failed.");
+                    continue;
+                }
+
+                Image imageIcon = image.getImage(); // transform it
+                Image newImg = imageIcon.getScaledInstance(200, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+                image = new ImageIcon(newImg);  // transform it back
+
+                row[0] = shopper.getShop();
+                row[1] = shopper.getTitle();
+                row[2] = shopper.getPrice();
+                row[3] = image;
+                model.addRow(row);
+            }
+        }};
 }

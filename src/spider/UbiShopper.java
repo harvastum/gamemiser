@@ -40,10 +40,10 @@ public class UbiShopper implements Shopper
 //            Node docu = doc.selectFirst("#search_resultsRows > a:nth-child(1)");
         title = doc.select("#search-result-items > li:nth-child(4) > div > div.card-details-wrapper >div > div.card-title > h2").text();
         textPrice = doc.selectFirst("#search-result-items > li:nth-child(4) > div > div.card-details-wrapper > div > div.card-info > div.card-price > div > span").text();
-//            Element priceElement = doc.selectFirst("div.search_price_discount_combined");
-//            link = doc.selectFirst("#search_resultsRows > a:nth-child(1)").attr("href");
+        String[] parts = textPrice.split(" ");
+        textPrice = parts[1] + parts[0];
         imageSrc = doc.selectFirst("#search-result-items > li:nth-child(4) > div > div > img").attr("data-mobile-src");
-//        price = parseInt(priceElement.attr("data-price-final"));
+
 
         } catch (java.io.IOException e) {
             e.printStackTrace();

@@ -16,7 +16,7 @@ public class Spider {
     public static void main (String[] args){
         ArrayList<Shopper> shoppers = new ArrayList<>();
         String query = "child";
-        shoppers.add(new SteamShopper(query));
+        shoppers.add(new AllegroShopper(query));
 
         for (Shopper shopper : shoppers){
             shopper.run();
